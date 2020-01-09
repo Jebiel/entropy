@@ -9,6 +9,7 @@ __description__ = 'Calculate Shannon Entropy for given file'
 
 import sys
 import math
+import collections
 
 def main():
     entropy()
@@ -22,20 +23,14 @@ def entropy():
     print('File size in bytes: {:,d}'.format(fileSize))
     # calculate the frequency of each byte value in the file
     print('Calculating Shannon entropy of file. Please wait...')
-    freqList = []
-    for b in range(256):
-        ctr = 0
-        for byte in byteArr:
-            if byte == b:
-                ctr += 1
-        freqList.append(float(ctr) / fileSize)
-    # Shannon entropy
-    ent = 0.0
-    for freq in freqList:
-        if freq > 0:
-            ent = ent + freq * math.log(freq, 2)
-    ent = -ent
-    print('Shannon entropy: {}'.format(ent))
+    e = 0
+    counter = collections.Counter(byteArr)
+    l = len(byteArr)
+    for count in counter.values():
+        # count is always > 0
+        p_x = count / l
+        e += - p_x * math.log2(p_x)
+    print('Shannon entropy: {}'.format(e))
     print
 
 
